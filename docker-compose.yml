@@ -1,0 +1,78 @@
+# M.A.N.A.G.E.R. / ai-gateway — Unraid dual-NVMe storage plane
+#
+# Device-bound Btrfs RAID0 (2× NVMe) + bees dedupe + NFS v4.2.
+# Storage plane only — no LiteLLM / Ollama / Open WebUI.
+#
+# Import on Unraid:
+#   Compose Manager / Portainer / CLI from this directory
+#   cp .env.example .env  # set NVME0/NVME1 by-id paths
+#   docker compose --env-file .env up -d --build
+#
+# First boot only: ALLOW_FORMAT=1 once, then set back to 0.
+#
+# Requires: privileged, host network, NVMe devices NOT in Unraid array/cache.
+
+name: fast-models
+
+services:
+  fast-models:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: manager-fast-models:local
+    container_name: fast-models
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    environment:
+      DEV0: /dev/nvme0n1
+      DEV1: /dev/nvme1n1
+      AI_DATA: /ai-data
+      ALLOW_FORMAT: ${ALLOW_FORMAT:-0}
+      FORCE_FORMAT: ${FORCE_FORMAT:-0}
+      NFS_CLIENTS: ${NFS_CLIENTS:-192.168.0.0/16}
+      BTRFS_LABEL: ${BTRFS_LABEL:-fast-models}
+      ENABLE_BEES: ${ENABLE_BEES:-1}
+      ENABLE_NFS: ${ENABLE_NFS:-1}
+      NFSD_THREADS: ${NFSD_THREADS:-8}
+      BEES_THREADS: ${BEES_THREADS:-1}
+      BEES_SCAN_MODE: ${BEES_SCAN_MODE:-4}
+      BEES_HASH_SIZE: ${BEES_HASH_SIZE:-1G}
+      BEES_DB: /var/lib/bees
+      BEESHOME: /var/lib/bees
+      TZ: ${TZ:-America/Chicago}
+    devices:
+      # Prefer stable by-id paths in .env (see .env.example)
+      - "${NVME0}:/dev/nvme0n1"
+      - "${NVME1}:/dev/nvme1n1"
+    volumes:
+      # bees hash DB + operator configs (small; keep on Unraid array/appdata)
+      - ${APPDATA:-/mnt/user/appdata/fast-models}/bees:/var/lib/bees
+      - ${APPDATA:-/mnt/user/appdata/fast-models}/config:/etc/bees
+    cap_add:
+      - SYS_ADMIN
+      - SYS_MODULE
+      - NET_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "findmnt -n /ai-data >/dev/null && test -f /ai-data/.fast-models-info",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    labels:
+      - net.unraid.docker.managed=composeman
+      - net.unraid.docker.icon=https://raw.githubusercontent.com/Zygo/bees/master/docs/bees.png
+      - manager.stack=fast-models
+      - manager.role=storage-plane
+
+  # SMB: not bundled. Runtime Btrfs mount lives only in this container's
+  # mount namespace, so a second Samba container cannot see /ai-data safely.
+  # For macOS, either (a) mount NFS from a Linux jump host, (b) switch to
+  # host-pool topology + Unraid SMB, or (c) add a privileged sidecar later
+  # with a shared mount namespace.

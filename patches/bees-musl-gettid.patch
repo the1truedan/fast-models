@@ -1,0 +1,31 @@
+--- a/include/crucible/process.h
++++ b/include/crucible/process.h
+@@ -11,9 +11,6 @@
+ #include <sys/wait.h>
+ #include <unistd.h>
+ 
+-extern "C" {
+-	pid_t gettid() throw();
+-};
+-
+ namespace crucible {
+ 	using namespace std;
+ 
+--- a/lib/process.cc
++++ b/lib/process.cc
+@@ -10,15 +10,6 @@
+ #include <unistd.h>
+ #include <sys/syscall.h>
+ 
+-extern "C" {
+-	pid_t
+-	__attribute__((weak))
+-	gettid() throw()
+-	{
+-		return syscall(SYS_gettid);
+-	}
+-};
+-
+ namespace crucible {
+ 	using namespace std;
+ 

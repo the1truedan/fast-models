@@ -1,0 +1,25 @@
+# bees notes / operator stamp for fast-models Btrfs pool
+# @UUID@ / @AI_DATA@ / @BEES_DB@ are substituted by entrypoint.sh
+#
+# Runtime path: entrypoint launches the bees CLI (not beesd). This file is
+# written for operators and future beesd use; CLI flags are authoritative.
+#
+# bees: https://github.com/Zygo/bees  (pinned v0.11 in Dockerfile)
+# Tuned modestly for Unraid hosts ~32 GiB RAM (raise BEES_THREADS only if free).
+
+UUID=@UUID@
+ROOT=@AI_DATA@
+
+# Hash table / work DB (bind-mounted host appdata — typically XFS on the array).
+# v0.11+ supports BEESHOME on non-btrfs filesystems.
+DB=@BEES_DB@
+
+# Work factor 0–10 (higher = more aggressive CPU/IO). 4 is a reasonable default.
+WORK_FACTOR=4
+
+# Keep bees out of the way of model load storms (compose BEES_THREADS)
+THREAD_COUNT=1
+
+# Scan mode (v0.11): 0=lockstep 1=independent 2=sequential 3=recent 4=extent
+# Extent scan (4) is the v0.11 default and preferred for model pools.
+SCAN_MODE=4

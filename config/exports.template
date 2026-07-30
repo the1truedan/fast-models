@@ -1,0 +1,7 @@
+# NFS v4.2 export of dual-NVMe Btrfs pool (substituted by entrypoint)
+# Clients should mount with:
+#   mount -t nfs -o vers=4.2,rsize=1048576,wsize=1048576,noatime,nodiratime,hard UNRAID_IP:/ /mnt/ai-data
+#
+# fsid=0 makes this the NFSv4 root (export path "/").
+
+@AI_DATA@	@NFS_CLIENTS@(rw,sync,no_subtree_check,no_root_squash,fsid=0,insecure)
