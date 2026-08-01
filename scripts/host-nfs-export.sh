@@ -3,7 +3,7 @@
 # Array share NFS stays disabled (shareNFSEnabled=no); only /mnt/ai-data is exported.
 # bees continues inside the fast-models container on the same pool.
 set -euo pipefail
-UUID="c1496e35-a834-4c20-af08-07791bced99d"
+UUID="<btrfs-pool-uuid>"  # set to your pool's UUID (blkid)
 MNT="/mnt/ai-data"
 CLIENTS="192.168.0.0/16"
 
