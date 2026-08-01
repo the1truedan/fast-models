@@ -1,22 +1,27 @@
-# fast-models — Unraid dual-NVMe storage plane
+# fast-models
 
-Import-and-run Docker Compose for **direct block-device access** to a **2× NVMe** pair on Unraid:
+A small Unraid Docker stack that owns two NVMe drives as a shared **AI file pool**:
+models, caches, git checkouts, Pinokio trees — the bulky stuff you want on one
+fast share instead of copied onto every machine.
 
-| Layer | Choice |
-|-------|--------|
-| Devices | `/dev/nvme*` (prefer `by-id`) bound into a privileged container |
-| Filesystem | **Btrfs RAID0** stripe (~4 TB usable on 2×2 TB; **no parity**) |
-| Dedupe | **bees** (online Btrfs), `duperemove`/`compsize` available for manual runs |
-| Export | **NFS v4.2** on host network (port 2049) |
-| Scope | **Storage plane only** — no LiteLLM / Ollama / Open WebUI |
+| Layer | What we use |
+|-------|-------------|
+| Drives | Two NVMe devices (prefer stable `/dev/disk/by-id/…` paths) |
+| Filesystem | Btrfs RAID0 (fast, **no parity** — one dead drive loses the pool) |
+| Space saving | **bees** keeps similar file chunks from eating disk twice |
+| Sharing | NFS so Mac/Linux clients can mount the pool |
+| Scope | **Storage only** — not your LLM chat stack |
 
-Aligns with M.A.N.A.G.E.R. Option A (fast model pool + bees + NFS v4.2) and prior dual-NVMe bifurcation / NFS notes.
+This is the storage half of a home AI lab, not a full “AI platform in a box.”
 
-## Docker vs true PCIe passthrough
+## Docker is not a VM passthrough
 
-Docker shares the **host kernel**. This stack binds **block devices** into a privileged container. It is **not** VFIO PCIe isolation (that requires an Unraid **VM**, e.g. Alpine + ZFS).
+The container is privileged and sees the raw NVMe block devices through the
+**host** kernel. That is convenient; it is **not** the same as giving a VM
+exclusive PCIe ownership of the drives.
 
-**Do not** assign these NVMe drives to the Unraid array, a cache pool, or auto-mount them with Unassigned Devices while this container owns them.
+**Do not** also put those NVMes in the Unraid array, a cache pool, or
+Unassigned Devices auto-mount while this stack is using them.
 
 ## Prerequisites
 
@@ -186,39 +191,59 @@ Verify bees + space:
 ```bash
 ssh root@<unraid-host-ip> 'docker exec fast-models pgrep -a bees; docker exec fast-models btrfs fi df /ai-data; du -sh /mnt/ai-data/models'
 ```
-## bees / manual dedupe
+## bees — background space saving
 
-Primary online agent for near-identical GGUF/ONNX variants (Option A recon).
+bees quietly walks the Btrfs pool and shares identical chunks so near-duplicate
+model files do not each take a full second copy of disk. It is **always on**
+when `ENABLE_BEES=1` (not a nightly cron job).
 
-- **Build**: image pins Zygo bees **`v0.11`** and applies a musl `gettid` compatibility patch (Alpine provides `gettid` in libc; bees’ weak redefinition breaks g++).
-- **Start**: when `ENABLE_BEES=1` (default), entrypoint pre-creates `$BEESHOME/beeshash.dat` (size `BEES_HASH_SIZE`, default `1G`) then runs:
-  - `bees --thread-count=$BEES_THREADS --scan-mode=$BEES_SCAN_MODE` (default scan mode **4 = extent**)
-  - low priority via `nice` / `ionice` when available
-- **State**: hash + status on array bind `APPDATA/bees` → `/var/lib/bees` (XFS-safe with v0.11).
-- **Verify**:
-  ```bash
-  docker exec fast-models command -v bees
-  docker logs fast-models 2>&1 | grep -i bees
-  ls -la /mnt/user/appdata/fast-models/bees/
-  docker exec fast-models sh -c 'kill -0 $(pgrep -x bees) && echo bees_running'
-  ```
-- Manual deep pass (optional complement):
+### Hash table size (important)
+
+bees keeps a fixed-size fingerprint table in `APPDATA/bees/beeshash.dat`.
+RAM use is roughly the same size as that file.
+
+| Size | When |
+|------|------|
+| **1G** | Small pools / first experiments only |
+| **2G** | **Recommended default** for multi‑TiB pools (our production after 2026-08-01) |
+| **4G** | Only if the 2G table stays nearly full after a full re-crawl; costs ~4 GiB sticky RAM on a box with **no swap** |
+
+If the table hits **100% full**, bees still runs but forgets old fingerprints
+and dedupes worse. That is **not** the same as the disk being full, and it is
+**not** caused by Unraid parity checks.
+
+**Growing the table safely**
+
+1. Leave `ALLOW_FORMAT=0` and `FORCE_FORMAT=0`.
+2. Stop **only the bees process** (keep the container and NFS share up if you can).
+3. Rename the old `beeshash.dat` and `beescrawl.dat` (do not truncate a live 1G table “up” to 2G in place).
+4. Create a fresh empty file: `truncate -s 2G beeshash.dat` (or 4G).
+5. Set `BEES_HASH_SIZE=2G` in `.env` so the next full container start matches.
+6. Start bees again. Occupancy will look near zero, then climb — that is normal.
+
+### Runtime notes
+
+- Image pins bees **v0.11** (with a small musl/`gettid` build fix for Alpine).
+- Default: 1 thread, scan-mode 4 (extent), low priority (`nice` / `ionice`).
+- Hash lives on the **array** under appdata, not on the NVMe pool itself.
+
+```bash
+docker exec fast-models pgrep -a bees
+ls -lh /mnt/user/appdata/fast-models/bees/beeshash.dat
+docker exec fast-models sh -c 'grep -E "cells occupied|Uptime" /var/lib/bees/beesstats.txt'
+```
+
+Optional deeper pass (IO-heavy; bees remains the everyday tool):
 
 ```bash
 docker exec fast-models duperemove -r -d -h /ai-data/models
-# compsize is optional on Alpine 3.21 (may be absent)
 docker exec fast-models compsize /ai-data/models 2>/dev/null || true
 ```
 
-Keep `BEES_THREADS=1` on ~32 GiB hosts unless you have spare RAM/CPU.
+Keep `BEES_THREADS=1` on ~32 GiB hosts unless you clearly have spare capacity.
 
-**Health / optional weekly duperemove** (bees itself is continuous — not cron):
-
-```bash
-# Copy to Unraid User Scripts or cron:
-#   deploy/unraid-fast-models/scripts/bees-health.sh      # daily log
-#   deploy/unraid-fast-models/scripts/duperemove-weekly.sh  # optional IO-heavy
-```
+Daily health / optional weekly duperemove scripts live under `scripts/`
+(`bees-health.sh`, `duperemove-weekly.sh`) for Unraid User Scripts or cron.
 
 ## Safety
 

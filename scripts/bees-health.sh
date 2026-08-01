@@ -1,7 +1,15 @@
 #!/bin/bash
 # Unraid User Scripts / cron: daily bees + free-space health log for fast-models.
-# Schedule example: daily 03:15
+# Prefer the managed Tower path:
+#   /mnt/user/appdata/manager-orchestration/exporters/bees_health_cron.sh
+# Schedule example: daily 03:15  (installed via install_dedup_cron.sh)
 set -euo pipefail
+
+# Delegate to the exporter-dir copy when present (single source of truth on Tower).
+MANAGED="${MANAGED_BEES_HEALTH:-/mnt/user/appdata/manager-orchestration/exporters/bees_health_cron.sh}"
+if [ -x "$MANAGED" ]; then
+  exec "$MANAGED"
+fi
 
 LOG_DIR="${LOG_DIR:-/mnt/user/appdata/fast-models/logs}"
 LOG="${LOG_DIR}/bees-health.log"
