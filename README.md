@@ -274,6 +274,24 @@ For VFIO passthrough of the dual-NVMe card + ZFS bclone + NFS inside a minimal V
 5. After reboot: remount works with `ALLOW_FORMAT=0`.
 6. (Later) two near-identical GGUFs under `models/` → bees/compsize shows savings.
 
+
+## How this came to be
+
+Shared models and tool trees got too big to copy onto every laptop and GPU box.
+After the caregiving pivot (**13 April 2026**) and the race toward the ACL
+Phase 1 deadline (**31 July 2026**), the home lab needed one honest pool:
+**ai-data** on Tower — fast NVMe, Btrfs, bees for near-duplicates, NFS for
+clients.
+
+This repo is that storage plane, spun out of the M.A.N.A.G.E.R. monorepo work
+so the gateway and coding agents have somewhere real to put weights. It was
+shaped in long Grok / Claude / ChatGPT design sessions, then grounded in git
+on the Unraid host — not left as chat folklore. Public release followed the
+ACL submission week as part of opening the stack piece by piece.
+
+**Timeline anchors:** vibecoding from **22 March 2026**; caregiving mission from
+**13 April 2026**; LLC **20 April 2026**; public modular repos late **July 2026**.
+
 ## Files
 
 | File | Role |
@@ -284,3 +302,12 @@ For VFIO passthrough of the dual-NVMe card + ZFS bclone + NFS inside a minimal V
 | `config/exports.template` | NFS export |
 | `config/bees.conf.template` | bees notes / UUID stamp |
 | `.env.example` | device paths + safety flags |
+
+---
+
+<p align="left">
+  <a href="https://linktr.ee/the1truedan"><img src="https://img.shields.io/badge/Linktree-39E09B?style=for-the-badge&logo=linktree&logoColor=white" alt="Linktree"></a>
+  <a href="https://ko-fi.com/the1truedan"><img src="https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
+</p>
+
+**© 2026 M.A.N.A.G.E.R. LLC** — *prepare for the care when we cannot be there*
