@@ -277,7 +277,8 @@ For VFIO passthrough of the dual-NVMe card + ZFS bclone + NFS inside a minimal V
 
 ## How this came to be
 
-Shared models and tool trees got too big to copy onto every laptop and GPU box.
+Shared models and tool trees got too big to copy onto every machine (Mac mini
+M4 desk box, GPU host, and Tower).
 After the caregiving pivot (**13 April 2026**) and the race toward the ACL
 Phase 1 deadline (**31 July 2026**), the home lab needed one honest pool:
 **ai-data** on Tower — fast NVMe, Btrfs, bees for near-duplicates, NFS for
