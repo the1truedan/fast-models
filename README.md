@@ -4,15 +4,16 @@ A small Unraid Docker stack that owns two NVMe drives as a shared **AI file pool
 models, caches, git checkouts, Pinokio trees — the bulky stuff you want on one
 fast share instead of copied onto every machine.
 
-| Layer | What we use |
-|-------|-------------|
-| Drives | Two NVMe devices (prefer stable `/dev/disk/by-id/…` paths) |
-| Filesystem | Btrfs RAID0 (fast, **no parity** — one dead drive loses the pool) |
-| Space saving | **bees** keeps similar file chunks from eating disk twice |
-| Sharing | NFS so Mac/Linux clients can mount the pool |
-| Scope | **Storage only** — not your LLM chat stack |
+| Layer | What we use | Upstream |
+|-------|-------------|----------|
+| Drives | Two NVMe devices (prefer stable `/dev/disk/by-id/…` paths) | — |
+| Filesystem | Btrfs RAID0 (fast, **no parity** — one dead drive loses the pool) | [Btrfs](https://btrfs.readthedocs.io/) |
+| Space saving | **bees** keeps similar file chunks from eating disk twice | [Zygo/bees](https://github.com/Zygo/bees) (Best-Effort Extent-Same) |
+| Sharing | NFS so Mac/Linux clients can mount the pool | kernel NFS |
+| Scope | **Storage only** — not your LLM chat stack | pair with [ai-gateway](https://github.com/the1truedan/ai-gateway) for chat/agents |
 
 This is the storage half of a home AI lab, not a full “AI platform in a box.”
+Ops history for bees hash sizing (**1 G → 4 G**): [ai-gateway docs/ops/bees](https://github.com/the1truedan/ai-gateway/tree/main/docs/ops/bees).
 
 ## Docker is not a VM passthrough
 
