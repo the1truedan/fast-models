@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>fast-models</title>
+<meta name="description" content="One fast NVMe share for bulky AI files: Btrfs RAID0, bees dedupe, host NFS. Storage only." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+
+<div class="hero">
+  <canvas id="bees-rain" aria-hidden="true"></canvas>
+  <nav class="top">
+    <a href="index.html" aria-current="page">home</a>
+    <a href="runbook.html">unraid runbook</a>
+    <a href="incident.html">disclosure</a>
+    <a href="bees.html">bees</a>
+    <a href="https://github.com/the1truedan/fast-models">github</a>
+  </nav>
+  <div class="hero-inner">
+    <p class="eyebrow">storage plane · not a chat stack</p>
+    <h1 class="wordmark">fast<span>-</span>models</h1>
+    <p class="tagline">One Btrfs pool for the bulky AI files. bees shares the identical chunks. NFS hands the same tree to every machine on the LAN.</p>
+    <div class="hero-cta">
+      <a class="btn primary" href="https://github.com/the1truedan/fast-models">View on GitHub</a>
+      <a class="btn" href="runbook.html">Unraid persist runbook</a>
+      <a class="btn" href="https://github.com/the1truedan/fast-models/releases/tag/v0.2.0">v0.2.0</a>
+      <span class="version-chip">v<b>0.2.0</b> · MIT · public</span>
+    </div>
+  </div>
+</div>
+
+<section class="band">
+  <div class="section-head">
+    <p class="section-eyebrow">what it actually is</p>
+    <h2 class="section-title">Two NVMe drives. One share. Background dedupe.</h2>
+    <p class="section-sub">Copying model trees onto a desk Mac, a GPU box, and a NAS does not scale. This stack owns the drives, walks them with bees, and exports them over NFS.</p>
+  </div>
+  <div class="stack-grid">
+    <a class="stack-card" href="https://btrfs.readthedocs.io/" target="_blank" rel="noopener">
+      <span class="role">filesystem</span>
+      <h3>Btrfs RAID0</h3>
+      <p>Fast stripe across two unassigned NVMe devices. No parity — one dead drive loses the pool.</p>
+      <span class="link-hint">btrfs.readthedocs.io →</span>
+    </a>
+    <a class="stack-card" href="bees.html">
+      <span class="role">dedupe</span>
+      <h3>bees</h3>
+      <p>Best-Effort Extent-Same. Near-duplicate GGUFs and HF blobs stop eating a second full copy.</p>
+      <span class="link-hint">hash table sizing →</span>
+    </a>
+    <a class="stack-card" href="runbook.html">
+      <span class="role">share</span>
+      <h3>Host NFS</h3>
+      <p>Linux clients: NFSv4.2, mount <code>/</code>. macOS: NFSv3 + full path. Container does not run nfsd.</p>
+      <span class="link-hint">persist runbook →</span>
+    </a>
+    <a class="stack-card" href="https://github.com/Zygo/bees" target="_blank" rel="noopener">
+      <span class="role">upstream</span>
+      <h3>Zygo/bees</h3>
+      <p>The deduper this image pins (v0.11, plus a small musl gettid fix for Alpine).</p>
+      <span class="link-hint">github.com/Zygo/bees →</span>
+    </a>
+    <a class="stack-card" href="https://github.com/the1truedan/ai-gateway" target="_blank" rel="noopener">
+      <span class="role">sibling</span>
+      <h3>ai-gateway</h3>
+      <p>The chat / agent side. This repo does not route tokens. It holds the weights.</p>
+      <span class="link-hint">github.com/the1truedan/ai-gateway →</span>
+    </a>
+    <a class="stack-card" href="incident.html">
+      <span class="role">disclosure</span>
+      <h3>FAT32 go hook</h3>
+      <p>The 2026-08-15 reboot failure: console Permission denied, NFS down, proxy blamed. Lab id CVE-FAUX-2026-0815-2.</p>
+      <span class="link-hint">what actually broke →</span>
+    </a>
+  </div>
+</section>
+
+<section class="band">
+  <div class="section-head">
+    <p class="section-eyebrow">the pitch, short version</p>
+    <h2 class="section-title">Four things it actually does</h2>
+  </div>
+  <div class="cap-grid">
+    <div class="cap-tile">
+      <span class="cap-glyph">▣</span>
+      <div>
+        <h3>Owns the drives</h3>
+        <p>Privileged container, host kernel, two unassigned NVMes. Not a VM passthrough. Not an Unraid cache pool.</p>
+      </div>
+    </div>
+    <div class="cap-tile">
+      <span class="cap-glyph">⬡</span>
+      <div>
+        <h3>Shares identical extents</h3>
+        <p>bees walks in the background. A 2G hash table is the default for multi-terabyte pools.</p>
+      </div>
+    </div>
+    <div class="cap-tile">
+      <span class="cap-glyph">⇄</span>
+      <div>
+        <h3>Exports once</h3>
+        <p>Host nfsd on 2049. Array NFS stays off. Linux v4.2 and macOS v3 both work.</p>
+      </div>
+    </div>
+    <div class="cap-tile">
+      <span class="cap-glyph">!</span>
+      <div>
+        <h3>Survives reboot — if you use bash</h3>
+        <p>Unraid <code>/boot</code> is FAT32. The persist script must be invoked with <code>bash</code>, or NFS dies after every restart.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="ok">
+    <h3>Until it has its own host</h3>
+    <p>This Unraid + host-nfsd layout is a stopgap. A dedicated box (or a small VM with the NVMe card passed through) would own Btrfs, bees, and nfsd without a FAT32 flash hook. Until that move: keep array NFS off, keep the container’s <code>ENABLE_NFS=0</code>, and keep the <code>bash</code> line in <code>/boot/config/go</code>.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <span class="mu-mark">fast-models is the storage half of a <span>µ</span>lab</span>
+    <nav class="footer-links">
+      <a href="https://github.com/the1truedan/fast-models/blob/main/README.md">README</a>
+      <a href="https://github.com/the1truedan/fast-models/blob/main/CHANGELOG.md">Changelog</a>
+      <a href="https://github.com/the1truedan/fast-models/blob/main/LICENSE">MIT</a>
+    </nav>
+  </div>
+</footer>
+<script src="assets/bees.js"></script>
+</body>
+</html>

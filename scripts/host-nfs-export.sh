@@ -2,6 +2,8 @@
 # Persist dual-NVMe fast-models Btrfs host mount + NFSv4 export for Mac/Linux clients.
 # Array share NFS stays disabled (shareNFSEnabled=no); only /mnt/ai-data is exported.
 # bees continues inside the fast-models container on the same pool.
+# Invoke as: bash /boot/config/plugins/fast-models/host-nfs-export.sh
+# Never exec this path from /boot/config/go — FAT32 has no +x (console Permission denied).
 set -euo pipefail
 UUID="<btrfs-pool-uuid>"  # set to your pool's UUID (blkid)
 MNT="/mnt/ai-data"

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>bees hash sizing · fast-models</title>
+<meta name="description" content="bees hash table sizing for a multi-terabyte AI file pool. 2G default. Not the same as a full disk." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+<div class="hero">
+  <canvas id="bees-rain" aria-hidden="true"></canvas>
+  <nav class="top">
+    <a href="index.html">home</a>
+    <a href="runbook.html">unraid runbook</a>
+    <a href="incident.html">disclosure</a>
+    <a href="bees.html" aria-current="page">bees</a>
+    <a href="https://github.com/the1truedan/fast-models">github</a>
+  </nav>
+  <div class="hero-inner">
+    <p class="eyebrow">best-effort extent-same</p>
+    <h1 class="wordmark">bees</h1>
+    <p class="tagline">A fixed-size fingerprint book. When the book is full, bees still runs — it just forgets older chunks and dedupes less well.</p>
+  </div>
+</div>
+
+<section class="band prose">
+  <p>bees walks the Btrfs pool in the background whenever <code>ENABLE_BEES=1</code>. It is not a nightly cron. Identical extents (near-duplicate GGUFs, HF blobs, Pinokio trees) start sharing disk.</p>
+
+  <table>
+    <thead><tr><th>Hash table</th><th>When</th></tr></thead>
+    <tbody>
+      <tr><td>1G</td><td>Small experiments only</td></tr>
+      <tr><td><strong>2G</strong></td><td>Default for multi-terabyte AI pools</td></tr>
+      <tr><td>4G</td><td>Only if 2G stays nearly full after a full re-crawl; ~4 GiB sticky RAM, no swap</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <h3>A full table is not a full disk</h3>
+    <p>Unraid parity checks do not fill <code>beeshash.dat</code>. Occupancy near 100% means bees is forgetting old fingerprints, not that the NVMe pool is out of space.</p>
+  </div>
+
+  <h2>Grow the table without drama</h2>
+  <ol>
+    <li>Keep <code>ALLOW_FORMAT=0</code> and <code>FORCE_FORMAT=0</code>.</li>
+    <li>Stop <strong>bees only</strong> if you can; leave the container and NFS share up.</li>
+    <li>Rename old <code>beeshash.dat</code> and <code>beescrawl.dat</code>.</li>
+    <li><code>truncate -s 2G beeshash.dat</code> — a fresh empty file. Do not enlarge a live 1G table in place.</li>
+    <li>Set <code>BEES_HASH_SIZE=2G</code> in <code>.env</code>.</li>
+    <li>Start bees again. Occupancy near zero, then climbing, is expected.</li>
+  </ol>
+
+  <h2>Look</h2>
+<pre>docker exec fast-models pgrep -a bees
+ls -lh /mnt/user/appdata/fast-models/bees/beeshash.dat
+docker exec fast-models sh -c 'grep -E "cells occupied|Uptime" /var/lib/bees/beesstats.txt'</pre>
+
+  <p>Optional deeper pass (IO-heavy; bees remains the everyday tool):</p>
+<pre>docker exec fast-models duperemove -r -d -h /ai-data/models
+docker exec fast-models compsize /ai-data/models 2>/dev/null || true</pre>
+  <p>Keep <code>BEES_THREADS=1</code> on ~32 GiB hosts unless you clearly have spare capacity. Upstream: <a href="https://github.com/Zygo/bees">Zygo/bees</a>. Markdown twin: <a href="https://github.com/the1truedan/fast-models/blob/main/docs/BEES_HASH_SIZING.md">docs/BEES_HASH_SIZING.md</a>.</p>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <span class="mu-mark">hexes that share <span>extents</span></span>
+    <nav class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="https://github.com/Zygo/bees">Zygo/bees</a>
+    </nav>
+  </div>
+</footer>
+<script src="assets/bees.js"></script>
+</body>
+</html>

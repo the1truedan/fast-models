@@ -27,5 +27,4 @@ On a 32 GiB Unraid host with **no swap**, prefer 2G first. Step up deliberatel
 A full hash table is **not** the same as a full disk, and Unraid parity does
 not fill the bees table.
 
-See also the operator incident notes in the main monorepo (if you have it):
-`docs/operations/BEES_HASH_SIZE_INCIDENT_2026-08-01.md`.
+HTML version: [bees.html](bees.html) on the project site.

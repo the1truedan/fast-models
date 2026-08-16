@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FAT32 go-hook disclosure · fast-models</title>
+<meta name="description" content="Public misconfiguration disclosure: Unraid /boot/config/go cannot exec a FAT32 persist script. Lab id CVE-FAUX-2026-0815-2." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+<div class="hero">
+  <canvas id="bees-rain" aria-hidden="true"></canvas>
+  <nav class="top">
+    <a href="index.html">home</a>
+    <a href="runbook.html">unraid runbook</a>
+    <a href="incident.html" aria-current="page">disclosure</a>
+    <a href="bees.html">bees</a>
+    <a href="https://github.com/the1truedan/fast-models">github</a>
+  </nav>
+  <div class="hero-inner">
+    <p class="eyebrow">misconfiguration disclosure</p>
+    <h1 class="wordmark">CVE-FAUX-<span>0815-2</span></h1>
+    <p class="tagline">Not a CVE. Not a bees bug. Not NFS itself. A FAT32 boot hook that looks like “the AI gateway is down.”</p>
+  </div>
+</div>
+
+<section class="band prose">
+  <div class="warn">
+    <h3>What operators saw</h3>
+    <p>After a NAS reboot the Unraid console printed <strong>Permission denied</strong> while a startup script ran. Clients could not mount the model pool. A desk-host Docker volume aimed at <code>…:/mnt/ai-data/uv-cache</code> failed with connection refused. The <code>fast-models</code> container was healthy. bees was still walking the pool <em>inside</em> the container.</p>
+  </div>
+
+  <h2>The faulty line</h2>
+<pre>( sleep 45; /boot/config/plugins/fast-models/host-nfs-export.sh ) &amp;</pre>
+  <p>Unraid <code>/boot</code> is FAT32. The script was <code>-rw-------</code>. After 45 seconds the shell tried to exec it. Permission denied. The persist script never ran: no host mount, empty <code>/etc/exports</code>, no nfsd.</p>
+
+  <h2>Stopgaps that stole the session</h2>
+  <table>
+    <thead><tr><th>Stopgap</th><th>Why it fails</th></tr></thead>
+    <tbody>
+      <tr><td><code>rc.nfsd start</code></td><td>Daemon up, export table empty</td></tr>
+      <tr><td>Settings → NFS</td><td>Turns on array-share NFS; this stack wants it off</td></tr>
+      <tr><td>Blame the chat-proxy container</td><td>That process never reached its config</td></tr>
+      <tr><td>“NFS has been down for weeks”</td><td>It was live in early August. It died on <em>this</em> reboot</td></tr>
+    </tbody>
+  </table>
+
+  <h2>The fix</h2>
+<pre>( sleep 45; bash /boot/config/plugins/fast-models/host-nfs-export.sh ) &amp;
+bash /boot/config/plugins/fast-models/host-nfs-export.sh
+showmount -e &lt;nas-host-ip&gt;</pre>
+
+  <h2>About the lab id</h2>
+  <p><strong>CVE-FAUX-2026-0815</strong> (same day, earlier) was a joke number for an agent stating “the NAS rebooted” without checking <code>uptime</code>. <strong>CVE-FAUX-2026-0815-2</strong> is the follow-on: narrating the chat stack instead of reading the console Permission denied. No CVE reservation. No vendor advisory. Published so the next Unraid operator does not spend an evening on the table above.</p>
+  <p>Markdown twin: <a href="https://github.com/the1truedan/fast-models/blob/main/docs/INCIDENT_FAT32_GO_HOOK_2026-08-15.md">docs/INCIDENT_FAT32_GO_HOOK_2026-08-15.md</a></p>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <span class="mu-mark">vanity score · narrative recidivism</span>
+    <nav class="footer-links">
+      <a href="runbook.html">Runbook</a>
+      <a href="https://github.com/the1truedan/fast-models">GitHub</a>
+    </nav>
+  </div>
+</footer>
+<script src="assets/bees.js"></script>
+</body>
+</html>

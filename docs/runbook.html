@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Unraid persist runbook · fast-models</title>
+<meta name="description" content="Host NFS persist for fast-models on Unraid. Invoke the flash script with bash. NFSv4.2 client mounts." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+<div class="hero">
+  <canvas id="bees-rain" aria-hidden="true"></canvas>
+  <nav class="top">
+    <a href="index.html">home</a>
+    <a href="runbook.html" aria-current="page">unraid runbook</a>
+    <a href="incident.html">disclosure</a>
+    <a href="bees.html">bees</a>
+    <a href="https://github.com/the1truedan/fast-models">github</a>
+  </nav>
+  <div class="hero-inner">
+    <p class="eyebrow">operator runbook</p>
+    <h1 class="wordmark">host <span>nfsd</span></h1>
+    <p class="tagline">While the pool still lives on Unraid, the host owns port 2049. The container does not. The flash hook must call bash.</p>
+  </div>
+</div>
+
+<section class="band prose">
+  <div class="warn">
+    <h3>FAT32 cannot execute your persist script</h3>
+    <p>Unraid <code>/boot</code> is a FAT32 flash drive. A bare path in <code>/boot/config/go</code> prints <strong>Permission denied</strong> on the console and leaves NFS down. Always:</p>
+  </div>
+<pre>( sleep 45; bash /boot/config/plugins/fast-models/host-nfs-export.sh ) &amp;</pre>
+
+  <h2>Install the hook</h2>
+  <ol>
+    <li>Copy <code>scripts/host-nfs-export.sh</code> to <code>/boot/config/plugins/fast-models/</code>.</li>
+    <li>Set <code>UUID=</code> on that copy to your pool’s <code>blkid</code> value. The repo copy is a placeholder on purpose.</li>
+    <li>Add the <code>bash</code> line above to <code>/boot/config/go</code> after <code>emhttp</code>.</li>
+    <li>Leave Unraid <strong>Settings → NFS</strong> off. Array shares stay SMB.</li>
+  </ol>
+
+  <h2>What the script does</h2>
+  <ol>
+    <li>Host-mounts the Btrfs UUID at <code>/mnt/ai-data</code> if that path is not already a mount.</li>
+    <li>Writes <code>/etc/exports</code> for that path only (<code>fsid=0</code>).</li>
+    <li>Starts host nfsd / rpcbind if <code>:2049</code> is quiet.</li>
+    <li><code>exportfs -v</code>.</li>
+  </ol>
+
+  <h2>Do not</h2>
+  <table>
+    <thead><tr><th>Action</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>Exec the script from <code>go</code></td><td>FAT32 → Permission denied</td></tr>
+      <tr><td><code>chmod +x</code> on <code>/boot</code></td><td>Mode does not survive</td></tr>
+      <tr><td><code>rc.nfsd start</code> alone</td><td>Empty export table</td></tr>
+      <tr><td>Enable Settings → NFS</td><td>Fights <code>shareNFSEnabled=no</code></td></tr>
+      <tr><td>Container <code>ENABLE_NFS=1</code></td><td>Often misses host rpcbind; macOS fails</td></tr>
+    </tbody>
+  </table>
+
+  <h2>After a reboot</h2>
+<pre>/etc/rc.d/rc.nfsd status
+findmnt /mnt/ai-data
+test -f /mnt/ai-data/.fast-models-info &amp;&amp; cat /mnt/ai-data/.fast-models-info
+showmount -e localhost
+ss -lntp | grep -E ':2049|:111'</pre>
+  <p>Console Permission denied on a startup script → <code>grep host-nfs /boot/config/go</code>. If the line has no <code>bash</code>, that is the bug. If <code>/mnt/ai-data</code> is an empty placeholder and the container is healthy, the <em>host</em> mount is missing — run the script with <code>bash</code>, do not start nfsd first.</p>
+
+  <h2>Linux client — NFSv4.2</h2>
+  <p><code>fsid=0</code> means the mount path is <code>/</code>:</p>
+<pre>sudo mkdir -p /mnt/ai-data
+sudo mount -t nfs -o vers=4.2,rsize=1048576,wsize=1048576,hard,noatime,nconnect=4 \
+  &lt;nas-host-ip&gt;:/ /mnt/ai-data
+test -f /mnt/ai-data/.fast-models-info &amp;&amp; echo OK</pre>
+<pre>&lt;nas-host-ip&gt;:/  /mnt/ai-data  nfs  vers=4.2,rsize=1048576,wsize=1048576,hard,noatime,nconnect=4,_netdev,x-systemd.automount  0  0</pre>
+
+  <h2>macOS client — NFSv3</h2>
+<pre>sudo mkdir -p /Volumes/ai-data
+sudo mount_nfs -o resvport,vers=3,tcp,rw,hard,intr \
+  &lt;nas-host-ip&gt;:/mnt/ai-data /Volumes/ai-data
+test -f /Volumes/ai-data/.fast-models-info &amp;&amp; echo OK</pre>
+
+  <h2>Until a dedicated host</h2>
+  <p>Keep NVMes unassigned. Host nfsd owns 2049. Container <code>ENABLE_NFS=0</code>. Array shares SMB. <code>go</code> uses <code>bash</code>. When the pool moves, Unraid becomes just another NFS client.</p>
+  <p>Markdown twin: <a href="https://github.com/the1truedan/fast-models/blob/main/docs/UNRAID_NFS_PERSIST.md">docs/UNRAID_NFS_PERSIST.md</a></p>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <span class="mu-mark">stopgap · not the dedicated-host end state</span>
+    <nav class="footer-links">
+      <a href="incident.html">Disclosure</a>
+      <a href="https://github.com/the1truedan/fast-models">GitHub</a>
+    </nav>
+  </div>
+</footer>
+<script src="assets/bees.js"></script>
+</body>
+</html>

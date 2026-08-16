@@ -1,0 +1,333 @@
+:root {
+  --bg: #0c100e;
+  --bg-panel: #141a17;
+  --bg-panel-2: #1b231e;
+  --line: #2a352e;
+  --fg: #e8efe8;
+  --fg-dim: #8fa396;
+  --fg-dimmer: #5d6e63;
+  --accent: #e8b84a;
+  --accent-soft: #f0d48a;
+  --accent-mu: #3dcaa0;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+body {
+  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono, code, pre {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, "Courier New", monospace;
+}
+
+a { color: inherit; }
+::selection { background: var(--accent); color: var(--bg); }
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+}
+
+#bees-rain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.55;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 5.5rem 1.5rem 4rem;
+  text-align: center;
+}
+
+.eyebrow {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+  margin: 0 0 1.4rem;
+}
+
+.wordmark {
+  margin: 0;
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  font-weight: 700;
+  font-size: clamp(2.4rem, 7vw, 4.2rem);
+  letter-spacing: 0.01em;
+  color: var(--fg);
+  text-shadow:
+    0 0 6px rgba(232, 184, 74, 0.45),
+    0 0 26px rgba(61, 202, 160, 0.22);
+  text-wrap: balance;
+}
+
+.wordmark span { color: var(--accent); }
+
+.tagline {
+  max-width: 48ch;
+  margin: 1.4rem auto 0;
+  font-size: 1.1rem;
+  color: var(--fg-dim);
+  text-wrap: balance;
+}
+
+.hero-cta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  margin-top: 2.4rem;
+}
+
+.btn {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  text-decoration: none;
+  padding: 0.65rem 1.1rem;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  background: var(--bg-panel);
+  color: var(--fg);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn:hover, .btn:focus-visible { border-color: var(--accent); color: var(--accent-soft); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+}
+.btn.primary:hover, .btn.primary:focus-visible {
+  color: var(--bg);
+  border-color: var(--accent-soft);
+  background: var(--accent-soft);
+}
+
+.version-chip {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  color: var(--fg-dimmer);
+}
+.version-chip b { color: var(--accent-mu); font-weight: 600; }
+
+nav.top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  gap: 1.4rem;
+  padding: 1rem 1.5rem 0;
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  color: var(--fg-dim);
+}
+nav.top a { text-decoration: none; }
+nav.top a:hover, nav.top a[aria-current="page"] { color: var(--accent-soft); }
+
+section.band { max-width: 980px; margin: 0 auto; padding: 4.2rem 1.5rem; }
+
+.section-head { text-align: center; margin-bottom: 2.6rem; }
+
+.section-eyebrow {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fg-dimmer);
+  margin: 0 0 0.7rem;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-wrap: balance;
+}
+
+.section-sub {
+  max-width: 54ch;
+  margin: 0.7rem auto 0;
+  color: var(--fg-dim);
+  font-size: 0.98rem;
+}
+
+.stack-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.stack-card {
+  background: var(--bg-panel);
+  padding: 1.5rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s ease;
+  min-height: 148px;
+}
+
+a.stack-card:hover, a.stack-card:focus-visible { background: var(--bg-panel-2); }
+a.stack-card:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+.stack-card .role {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+}
+
+.stack-card h3 { margin: 0; font-size: 1.05rem; font-weight: 600; }
+.stack-card p { margin: 0; font-size: 0.88rem; color: var(--fg-dim); flex-grow: 1; }
+
+.stack-card .link-hint {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  font-size: 0.74rem;
+  color: var(--fg-dimmer);
+}
+
+a.stack-card .link-hint { color: var(--accent-mu); }
+
+.cap-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.1rem;
+}
+
+.cap-tile {
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.cap-glyph {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  font-size: 1.5rem;
+  color: var(--accent);
+  line-height: 1;
+  padding-top: 0.15rem;
+}
+
+.cap-tile h3 { margin: 0 0 0.35rem; font-size: 1rem; font-weight: 600; }
+.cap-tile p { margin: 0; font-size: 0.88rem; color: var(--fg-dim); }
+
+.warn, .ok, .note {
+  border-radius: 6px;
+  padding: 1.1rem 1.2rem;
+  margin: 0 0 1.2rem;
+  border: 1px solid var(--line);
+  background: var(--bg-panel);
+}
+.warn { border-color: #8a4b2a; }
+.ok { border-color: var(--accent-mu); }
+.note { border-color: var(--line); }
+
+.warn h3, .ok h3, .note h3 {
+  margin: 0 0 0.4rem;
+  font-size: 0.95rem;
+}
+.warn p, .ok p, .note p, .prose p { margin: 0 0 0.7rem; color: var(--fg-dim); }
+.prose p:last-child, .warn p:last-child, .ok p:last-child { margin-bottom: 0; }
+
+.prose h2 { font-size: 1.25rem; margin: 2.2rem 0 0.8rem; }
+.prose h3 { font-size: 1.05rem; margin: 1.6rem 0 0.5rem; }
+.prose ul, .prose ol { color: var(--fg-dim); padding-left: 1.2rem; }
+.prose li { margin: 0.35rem 0; }
+.prose a { color: var(--accent-soft); }
+
+pre {
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  font-size: 0.82rem;
+  color: var(--accent-soft);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  margin: 1rem 0 1.6rem;
+}
+th, td {
+  text-align: left;
+  padding: 0.55rem 0.7rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+th { color: var(--fg-dimmer); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; }
+td { color: var(--fg-dim); }
+
+footer {
+  border-top: 1px solid var(--line);
+  padding: 2.4rem 1.5rem 3rem;
+}
+
+.footer-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.4rem;
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  color: var(--fg-dim);
+}
+.footer-links a { text-decoration: none; }
+.footer-links a:hover, .footer-links a:focus-visible { color: var(--accent-soft); }
+
+.mu-mark {
+  font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  color: var(--fg-dimmer);
+}
+.mu-mark span { color: var(--accent-mu); opacity: 0.85; }
+
+@media (max-width: 720px) {
+  .stack-grid, .cap-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #bees-rain { display: none; }
+}
