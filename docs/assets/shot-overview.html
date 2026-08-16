@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>fast-models / bees — overview</title>
+<style>
+  html, body { margin: 0; background: #111318; color: #e8efe8; font-family: ui-sans-serif, system-ui, sans-serif; }
+  .wrap { width: 1280px; padding: 28px 32px 36px; }
+  .top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px; }
+  h1 { margin: 0; font-size: 22px; font-weight: 650; }
+  .meta { font-family: ui-monospace, Menlo, monospace; font-size: 13px; color: #7d8790; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .stat { background: #1a1d24; border-radius: 6px; padding: 16px 18px; }
+  .stat.up { background: #163126; }
+  .k { font-family: ui-monospace, Menlo, monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #7d8790; }
+  .v { margin-top: 8px; font-size: 34px; font-weight: 650; letter-spacing: -0.03em; }
+  .stat.up .v { color: #3dcaa0; }
+  .foot { margin-top: 16px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #5d6e63; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>fast-models / bees dedupe</h1>
+    <div class="meta">sample snapshot · 2026-08-15 · Prometheus textfile</div>
+  </div>
+  <div class="stats">
+    <div class="stat up"><div class="k">bees</div><div class="v">UP</div></div>
+    <div class="stat"><div class="k">btrfs Data used</div><div class="v">2.08 TiB</div></div>
+    <div class="stat"><div class="k">Data allocated</div><div class="v">2.22 TiB</div></div>
+    <div class="stat"><div class="k">devices (raw RAID0)</div><div class="v">3.68 TiB</div></div>
+  </div>
+  <div class="foot">Hash occupancy omitted — beesstats unreadable after host reboot. Not a logged-in Grafana session.</div>
+</div>
+</body>
+</html>

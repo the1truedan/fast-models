@@ -16,6 +16,7 @@
     <a href="runbook.html">unraid runbook</a>
     <a href="incident.html">disclosure</a>
     <a href="bees.html" aria-current="page">bees</a>
+    <a href="observability.html">grafana</a>
     <a href="https://github.com/the1truedan/fast-models">github</a>
   </nav>
   <div class="hero-inner">
@@ -60,7 +61,7 @@ docker exec fast-models sh -c 'grep -E "cells occupied|Uptime" /var/lib/bees/bee
   <p>Optional deeper pass (IO-heavy; bees remains the everyday tool):</p>
 <pre>docker exec fast-models duperemove -r -d -h /ai-data/models
 docker exec fast-models compsize /ai-data/models 2>/dev/null || true</pre>
-  <p>Keep <code>BEES_THREADS=1</code> on ~32 GiB hosts unless you clearly have spare capacity. Upstream: <a href="https://github.com/Zygo/bees">Zygo/bees</a>. Markdown twin: <a href="https://github.com/the1truedan/fast-models/blob/main/docs/BEES_HASH_SIZING.md">docs/BEES_HASH_SIZING.md</a>.</p>
+  <p>Keep <code>BEES_THREADS=1</code> on ~32 GiB hosts unless you clearly have spare capacity. Upstream: <a href="https://github.com/Zygo/bees">Zygo/bees</a>. Markdown twin: <a href="https://github.com/the1truedan/fast-models/blob/main/docs/BEES_HASH_SIZING.md">docs/BEES_HASH_SIZING.md</a>. Grafana import + sample screenshots: <a href="observability.html">observability.html</a>.</p>
 </section>
 
 <footer>

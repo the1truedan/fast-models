@@ -1,0 +1,19 @@
+# Sample Prometheus scrape for fast-models bees/btrfs metrics.
+# Point node_exporter at the textfile directory the exporter writes.
+# Hostnames here are placeholders — do not copy a LAN IP into a public fork.
+
+global:
+  scrape_interval: 30s
+
+scrape_configs:
+  - job_name: nas-node
+    static_configs:
+      - targets: ["nas-host:9100"]
+        labels:
+          role: storage
+          pool: fast-models
+
+  # Optional: scrape Prometheus itself
+  - job_name: prometheus
+    static_configs:
+      - targets: ["nas-host:9090"]

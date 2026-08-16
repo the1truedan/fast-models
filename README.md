@@ -7,8 +7,9 @@ This repo is the **storage plane**. It is not a chat stack. Pair it with
 [ai-gateway](https://github.com/the1truedan/ai-gateway) if you want the
 language-model side.
 
-**v0.2.0** · [site](https://the1truedan.github.io/fast-models/) ·
-[changelog](CHANGELOG.md) · [Unraid NFS runbook](docs/UNRAID_NFS_PERSIST.md)
+**v0.2.1** · [site](https://the1truedan.github.io/fast-models/) ·
+[changelog](CHANGELOG.md) · [Unraid NFS runbook](docs/UNRAID_NFS_PERSIST.md) ·
+[Grafana sample](docs/observability.html)
 
 | Layer | What we use | Upstream |
 |-------|-------------|----------|
@@ -286,13 +287,15 @@ from **13 April 2026**; LLC **20 April 2026**; public modular repos late
 | `config/exports.template` | NFS export (container path; unused when `ENABLE_NFS=0`) |
 | `config/bees.conf.template` | bees notes / UUID stamp |
 | `.env.example` | device paths + safety flags |
-| `docs/` | Runbook, incident, [GitHub Pages](https://the1truedan.github.io/fast-models/) |
+| `docs/` | Runbook, incident, Grafana sample, [GitHub Pages](https://the1truedan.github.io/fast-models/) |
+| `docs/observability/` | Importable Grafana dashboard + Prometheus scrape example |
+| `deploy/observability/` | node_exporter textfile script for bees + btrfs |
 
 ---
 
 <p align="left">
   <a href="https://the1truedan.github.io/fast-models/"><img src="https://img.shields.io/badge/pages-fast--models-e8b84a?style=for-the-badge" alt="GitHub Pages"></a>
-  <a href="https://github.com/the1truedan/fast-models/releases/tag/v0.2.0"><img src="https://img.shields.io/badge/release-v0.2.0-3dcaa0?style=for-the-badge" alt="v0.2.0"></a>
+  <a href="https://github.com/the1truedan/fast-models/releases/tag/v0.2.1"><img src="https://img.shields.io/badge/release-v0.2.1-3dcaa0?style=for-the-badge" alt="v0.2.1"></a>
   <a href="https://linktr.ee/the1truedan"><img src="https://img.shields.io/badge/Linktree-39E09B?style=for-the-badge&logo=linktree&logoColor=white" alt="Linktree"></a>
   <a href="https://ko-fi.com/the1truedan"><img src="https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
 </p>

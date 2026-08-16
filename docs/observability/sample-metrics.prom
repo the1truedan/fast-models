@@ -1,0 +1,22 @@
+# HELP bees_up 1 if bees is running inside the fast-models container.
+# TYPE bees_up gauge
+bees_up 1
+# HELP btrfs_ai_data_total_bytes btrfs Data profile total bytes.
+# TYPE btrfs_ai_data_total_bytes gauge
+btrfs_ai_data_total_bytes 2440472174592
+# HELP btrfs_ai_data_used_bytes btrfs Data profile used bytes.
+# TYPE btrfs_ai_data_used_bytes gauge
+btrfs_ai_data_used_bytes 2286984188723
+# HELP btrfs_ai_data_metadata_used_bytes btrfs Metadata used bytes.
+# TYPE btrfs_ai_data_metadata_used_bytes gauge
+btrfs_ai_data_metadata_used_bytes 10936123392
+# HELP ai_data_bucket_used_bytes Apparent size from `du` on generic pool buckets.
+# TYPE ai_data_bucket_used_bytes gauge
+ai_data_bucket_used_bytes{bucket="models"} 1759218604441
+ai_data_bucket_used_bytes{bucket="pinokio"} 468151468032
+ai_data_bucket_used_bytes{bucket="uv-cache"} 242665652224
+ai_data_bucket_used_bytes{bucket="github"} 71940702208
+ai_data_bucket_used_bytes{bucket="hf-cache"} 27917287424
+# Snapshot: 2026-08-15. Two NVMe RAID0, bees process up.
+# Hash-table occupancy omitted — beesstats file was unreadable after a host reboot (array I/O).
+# These are generic bucket names only. Not a full `du` of the pool.

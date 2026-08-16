@@ -3,6 +3,18 @@
 All notable changes to **fast-models** are documented here.
 Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.1] — 2026-08-15
+
+### Added
+
+- **Grafana / Prometheus sample.** Importable dashboard
+  (`docs/observability/grafana-bees-dashboard.json`), textfile exporter
+  (`deploy/observability/ai_data_stats_exporter.sh`), example scrape config,
+  and a 2026-08-15 metrics snapshot. Screenshots use generic bucket names
+  and live sizes only (models 1.6T, pinokio 436G, uv-cache 226G, github 67G,
+  hf-cache 26G; btrfs Data 2.08 / 2.22 TiB). No LAN IPs or home paths.
+- Pages: [observability.html](https://the1truedan.github.io/fast-models/observability.html)
+
 ## [0.2.0] — 2026-08-15
 
 Site: [the1truedan.github.io/fast-models](https://the1truedan.github.io/fast-models/)

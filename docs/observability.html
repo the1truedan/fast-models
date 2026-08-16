@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Grafana / Prometheus sample · fast-models</title>
+<meta name="description" content="Sample Grafana dashboard and Prometheus textfile metrics for bees + btrfs. Generic bucket names and sizes only." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/site.css" />
+<style>
+  .dash {
+    background: #111318;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1rem 1rem 1.2rem;
+    margin: 0 0 1.6rem;
+  }
+  .dash-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.74rem;
+    color: var(--fg-dimmer);
+  }
+  .dash-head strong { color: var(--fg); font-size: 0.92rem; font-weight: 600; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+    margin-bottom: 0.9rem;
+  }
+  .stat {
+    background: #1a1d24;
+    border-radius: 4px;
+    padding: 0.75rem 0.8rem 0.7rem;
+  }
+  .stat.up { background: #163126; }
+  .stat .k {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-dimmer);
+  }
+  .stat .v {
+    margin-top: 0.25rem;
+    font-size: 1.35rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+  }
+  .stat.up .v { color: var(--accent-mu); }
+  .bars { display: flex; flex-direction: column; gap: 0.55rem; }
+  .bar-row { display: grid; grid-template-columns: 7.5rem 1fr 4.5rem; gap: 0.7rem; align-items: center; }
+  .bar-row span { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.78rem; color: var(--fg-dim); }
+  .bar-row .n { text-align: right; color: var(--accent-soft); }
+  .track { height: 10px; background: #242830; border-radius: 99px; overflow: hidden; }
+  .fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-mu)); border-radius: 99px; }
+  .shot {
+    margin: 0 0 1.4rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg-panel);
+  }
+  .shot img { display: block; width: 100%; height: auto; }
+  .shot figcaption {
+    padding: 0.7rem 1rem;
+    font-size: 0.82rem;
+    color: var(--fg-dimmer);
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: 1fr 1fr; }
+    .bar-row { grid-template-columns: 1fr; gap: 0.2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="hero">
+  <canvas id="bees-rain" aria-hidden="true"></canvas>
+  <nav class="top">
+    <a href="index.html">home</a>
+    <a href="runbook.html">unraid runbook</a>
+    <a href="incident.html">disclosure</a>
+    <a href="bees.html">bees</a>
+    <a href="observability.html" aria-current="page">grafana</a>
+    <a href="https://github.com/the1truedan/fast-models">github</a>
+  </nav>
+  <div class="hero-inner">
+    <p class="eyebrow">sample telemetry</p>
+    <h1 class="wordmark">bees <span>×</span> prom</h1>
+    <p class="tagline">A Grafana import and a Prometheus textfile exporter. Screenshots use generic bucket names and live sizes from 2026-08-15. No LAN IPs, no home paths.</p>
+  </div>
+</div>
+
+<section class="band">
+  <div class="note">
+    <h3>What you are looking at</h3>
+    <p>Live <code>du</code> + <code>btrfs fi df</code> from a two-NVMe RAID0 pool on 2026-08-15. bees was running. The hash-table file on the array was unreadable after a host reboot, so occupancy is omitted rather than invented. Grafana/Prometheus themselves were down that evening — these panels are rebuilt from the exporter metrics, not a logged-in admin UI.</p>
+  </div>
+
+  <figure class="shot">
+    <img src="assets/grafana-overview.png" alt="Sample Grafana-style overview: bees up, 2.08 TiB of 2.22 TiB Data used" />
+    <figcaption>docs/assets/grafana-overview.png — health + capacity</figcaption>
+  </figure>
+  <figure class="shot">
+    <img src="assets/grafana-buckets.png" alt="Sample bucket sizes: models 1.6T, pinokio 436G, uv-cache 226G, github 67G, hf-cache 26G" />
+    <figcaption>docs/assets/grafana-buckets.png — generic pool buckets</figcaption>
+  </figure>
+
+  <div class="dash" aria-label="Live-shaped sample dashboard">
+    <div class="dash-head">
+      <strong>fast-models / bees dedupe</strong>
+      <span>sample · 2026-08-15 · last 24h</span>
+    </div>
+    <div class="stats">
+      <div class="stat up"><div class="k">bees</div><div class="v">UP</div></div>
+      <div class="stat"><div class="k">Data used</div><div class="v">2.08 TiB</div></div>
+      <div class="stat"><div class="k">Data allocated</div><div class="v">2.22 TiB</div></div>
+      <div class="stat"><div class="k">devices (raw)</div><div class="v">3.68 TiB</div></div>
+    </div>
+    <div class="bars">
+      <div class="bar-row"><span>models</span><div class="track"><div class="fill" style="width:88%"></div></div><span class="n">1.6T</span></div>
+      <div class="bar-row"><span>pinokio</span><div class="track"><div class="fill" style="width:24%"></div></div><span class="n">436G</span></div>
+      <div class="bar-row"><span>uv-cache</span><div class="track"><div class="fill" style="width:12%"></div></div><span class="n">226G</span></div>
+      <div class="bar-row"><span>github</span><div class="track"><div class="fill" style="width:4%"></div></div><span class="n">67G</span></div>
+      <div class="bar-row"><span>hf-cache</span><div class="track"><div class="fill" style="width:2%"></div></div><span class="n">26G</span></div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <h2>Import</h2>
+    <ol>
+      <li>Cron <a href="https://github.com/the1truedan/fast-models/blob/main/deploy/observability/ai_data_stats_exporter.sh"><code>deploy/observability/ai_data_stats_exporter.sh</code></a> every 15 minutes on the NAS host.</li>
+      <li>node_exporter <code>--collector.textfile.directory</code> on that output dir.</li>
+      <li>Prometheus scrapes the node_exporter — see <a href="https://github.com/the1truedan/fast-models/blob/main/docs/observability/prometheus-scrape.example.yml">prometheus-scrape.example.yml</a>.</li>
+      <li>Grafana → Import → <a href="https://github.com/the1truedan/fast-models/blob/main/docs/observability/grafana-bees-dashboard.json">grafana-bees-dashboard.json</a> (uid <code>fast-models-bees-dedupe</code>).</li>
+    </ol>
+    <p>Do not treat content-hash “reclaimable GB” as bees savings. That series is optional and only appears if you pass <code>AUDIT_JSON</code>.</p>
+    <p>Full notes: <a href="https://github.com/the1truedan/fast-models/blob/main/docs/observability/README.md">docs/observability/README.md</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <span class="mu-mark">generic buckets · no LAN in the JSON</span>
+    <nav class="footer-links">
+      <a href="bees.html">bees sizing</a>
+      <a href="https://github.com/the1truedan/fast-models">GitHub</a>
+    </nav>
+  </div>
+</footer>
+<script src="assets/bees.js"></script>
+</body>
+</html>
