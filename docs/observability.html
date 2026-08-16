@@ -99,7 +99,7 @@
 <section class="band">
   <div class="note">
     <h3>What you are looking at</h3>
-    <p>Live <code>du</code> + <code>btrfs fi df</code> from a two-NVMe RAID0 pool on 2026-08-15. bees was running. The hash-table file on the array was unreadable after a host reboot, so occupancy is omitted rather than invented. Grafana/Prometheus themselves were down that evening — these panels are rebuilt from the exporter metrics, not a logged-in admin UI.</p>
+    <p>Live <code>du -xhd1</code> + <code>btrfs fi df</code> from a two-NVMe RAID0 pool on 2026-08-15. bees was running. Apparent tree <strong>3.2T</strong> vs btrfs Data used <strong>2.08 TiB</strong> (bees + zstd). Hash occupancy omitted (beesstats unreadable after reboot). Grafana/Prometheus themselves were down — panels rebuilt from those numbers, not a logged-in admin UI.</p>
   </div>
 
   <figure class="shot">
@@ -107,7 +107,7 @@
     <figcaption>docs/assets/grafana-overview.png — health + capacity</figcaption>
   </figure>
   <figure class="shot">
-    <img src="assets/grafana-buckets.png" alt="Sample bucket sizes: models 1.6T, pinokio 436G, uv-cache 226G, github 67G, hf-cache 26G" />
+    <img src="assets/grafana-buckets.png" alt="Sample bucket sizes: models 1.6T, pinokio 436G, opt 407G, uv-cache 226G, llms 202G; apparent 3.2T vs 2.08 TiB on disk" />
     <figcaption>docs/assets/grafana-buckets.png — generic pool buckets</figcaption>
   </figure>
 
@@ -123,11 +123,14 @@
       <div class="stat"><div class="k">devices (raw)</div><div class="v">3.68 TiB</div></div>
     </div>
     <div class="bars">
-      <div class="bar-row"><span>models</span><div class="track"><div class="fill" style="width:88%"></div></div><span class="n">1.6T</span></div>
-      <div class="bar-row"><span>pinokio</span><div class="track"><div class="fill" style="width:24%"></div></div><span class="n">436G</span></div>
-      <div class="bar-row"><span>uv-cache</span><div class="track"><div class="fill" style="width:12%"></div></div><span class="n">226G</span></div>
-      <div class="bar-row"><span>github</span><div class="track"><div class="fill" style="width:4%"></div></div><span class="n">67G</span></div>
-      <div class="bar-row"><span>hf-cache</span><div class="track"><div class="fill" style="width:2%"></div></div><span class="n">26G</span></div>
+      <div class="bar-row"><span>models</span><div class="track"><div class="fill" style="width:50%"></div></div><span class="n">1.6T</span></div>
+      <div class="bar-row"><span>pinokio</span><div class="track"><div class="fill" style="width:14%"></div></div><span class="n">436G</span></div>
+      <div class="bar-row"><span>opt</span><div class="track"><div class="fill" style="width:13%"></div></div><span class="n">407G</span></div>
+      <div class="bar-row"><span>uv-cache</span><div class="track"><div class="fill" style="width:7%"></div></div><span class="n">226G</span></div>
+      <div class="bar-row"><span>llms</span><div class="track"><div class="fill" style="width:6%"></div></div><span class="n">202G</span></div>
+      <div class="bar-row"><span>_dl</span><div class="track"><div class="fill" style="width:3%"></div></div><span class="n">111G</span></div>
+      <div class="bar-row"><span>github</span><div class="track"><div class="fill" style="width:2%"></div></div><span class="n">67G</span></div>
+      <div class="bar-row"><span>work</span><div class="track"><div class="fill" style="width:2%"></div></div><span class="n">55G</span></div>
     </div>
   </div>
 

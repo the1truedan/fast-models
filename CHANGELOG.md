@@ -3,6 +3,14 @@
 All notable changes to **fast-models** are documented here.
 Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.2] — 2026-08-15
+
+### Changed
+
+- Completed the 2026-08-15 bucket snapshot: apparent tree **3.2T** vs btrfs
+  Data used **2.08 TiB**. Added opt, llms, `_dl`, work, comfyui,
+  stability-matrix, comfyui-music3. Same generic names only.
+
 ## [0.2.1] — 2026-08-15
 
 ### Added

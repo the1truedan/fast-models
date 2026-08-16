@@ -14,9 +14,16 @@ btrfs_ai_data_metadata_used_bytes 10936123392
 # TYPE ai_data_bucket_used_bytes gauge
 ai_data_bucket_used_bytes{bucket="models"} 1759218604441
 ai_data_bucket_used_bytes{bucket="pinokio"} 468151468032
+ai_data_bucket_used_bytes{bucket="opt"} 437025177600
 ai_data_bucket_used_bytes{bucket="uv-cache"} 242665652224
+ai_data_bucket_used_bytes{bucket="llms"} 216919113728
+ai_data_bucket_used_bytes{bucket="_dl"} 119185342464
 ai_data_bucket_used_bytes{bucket="github"} 71940702208
+ai_data_bucket_used_bytes{bucket="work"} 59055800320
 ai_data_bucket_used_bytes{bucket="hf-cache"} 27917287424
+ai_data_bucket_used_bytes{bucket="comfyui"} 27917287424
+ai_data_bucket_used_bytes{bucket="stability-matrix"} 21474836480
+ai_data_bucket_used_bytes{bucket="comfyui-music3"} 18253611008
 # Snapshot: 2026-08-15. Two NVMe RAID0, bees process up.
+# Apparent tree 3.2T vs btrfs Data used 2.08 TiB (bees + zstd).
 # Hash-table occupancy omitted — beesstats file was unreadable after a host reboot (array I/O).
-# These are generic bucket names only. Not a full `du` of the pool.

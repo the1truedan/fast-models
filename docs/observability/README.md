@@ -25,16 +25,23 @@ Site page with screenshots: [observability.html](../observability.html).
 
 ## Sample snapshot (2026-08-15)
 
-Generic buckets from `du` on a live two-NVMe RAID0 pool. bees was up. The hash-table file on the array was unreadable after the host reboot (I/O error), so occupancy is omitted on purpose.
+Generic buckets from a full `du -xhd1` on a live two-NVMe RAID0 pool. bees was up. Apparent tree **3.2T** vs btrfs Data used **2.08 TiB** (bees + zstd). The hash-table file on the array was unreadable after the host reboot (I/O error), so occupancy is omitted on purpose.
 
 | Bucket | Apparent size |
 |--------|----------------|
 | models | 1.6T |
 | pinokio | 436G |
+| opt | 407G |
 | uv-cache | 226G |
+| llms | 202G |
+| _dl | 111G |
 | github | 67G |
+| work | 55G |
 | hf-cache | 26G |
-| **btrfs Data used / allocated** | **2.08 TiB / 2.22 TiB** |
+| comfyui | 26G |
+| stability-matrix | 20G |
+| comfyui-music3 | 17G |
+| **apparent tree / btrfs Data used** | **3.2T / 2.08 TiB** |
 
 Device raw capacity was about 3.68 TiB (1.82 + 1.86). RAID0 has no parity.
 
