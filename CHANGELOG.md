@@ -3,6 +3,12 @@
 All notable changes to **fast-models** are documented here.
 Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased] — 2026-10-02
+
+### Changed
+
+- Hash table sizing table: added **6G** (this pool today, 75% full) and **8G** (planned as the pool grows past ~3 TiB).
+
 ## [0.2.4] — 2026-10-02
 
 ### Changed

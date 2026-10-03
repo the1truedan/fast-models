@@ -216,6 +216,8 @@ when `ENABLE_BEES=1` (not a nightly cron).
 | **1G** | Small pools / first experiments |
 | **2G** | **Default** for multi-TiB pools |
 | **4G** | Only if 2G stays nearly full after a full re-crawl; ~4 GiB sticky RAM, no swap |
+| **6G** | **This pool today** (2.6 TiB, mostly model files): 75% full with evictions; ~6 GiB sticky RAM |
+| **8G** | Planned next step as the pool grows past ~3 TiB or evictions stay high; ~8 GiB sticky RAM |
 
 **Reality check (this pool, 2.6 TiB of mostly model files):** the 1G table was 99% full by
 July 2026. We increased it to 4G, then to **6G on 2026-09-27**. At 6G it is 75% full and

@@ -11,6 +11,8 @@ forgets older entries and dedupes less well.
 | 1G | Small experiments only |
 | **2G** | Multi-terabyte AI file pools (production default after 2026-08-01) |
 | 4G | Only if 2G stays ~full after a full re-crawl; costs ~4 GiB sticky RAM |
+| **6G** | Real need on this lab's 2.6 TiB model pool (since 2026-09-27; 75% full, evictions still occur); ~6 GiB sticky RAM |
+| 8G | Expected future step when the pool grows past ~3 TiB or evictions stay high; ~8 GiB sticky RAM |
 
 On a 32 GiB Unraid host with **no swap**, prefer 2G first. Step up deliberately.
 
