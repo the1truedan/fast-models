@@ -340,15 +340,9 @@ from **13 April 2026**; LLC **20 April 2026**; public modular repos late
 
 <p align="left">
   <a href="https://the1truedan.github.io/fast-models/"><img src="https://img.shields.io/badge/pages-fast--models-e8b84a?style=for-the-badge" alt="GitHub Pages"></a>
-  <a href="https://github.com/the1truedan/fast-models/releases/tag/v0.2.4"><img src="https://img.shields.io/badge/release-v0.2.4-3dcaa0?style=for-the-badge" alt="v0.2.2"></a>
+  <a href="https://github.com/the1truedan/fast-models/releases/tag/v0.2.4"><img src="https://img.shields.io/badge/release-v0.2.4-3dcaa0?style=for-the-badge" alt="v0.2.4"></a>
   <a href="https://linktr.ee/the1truedan"><img src="https://img.shields.io/badge/Linktree-39E09B?style=for-the-badge&logo=linktree&logoColor=white" alt="Linktree"></a>
   <a href="https://ko-fi.com/the1truedan"><img src="https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
 </p>
 
 **© 2026 M.A.N.A.G.E.R. LLC** — *prepare for the care when we cannot be there*
-
-<!-- manager-footer:start -->
----
-
-<p align="center">© 2026 M.A.N.A.G.E.R. LLC — prepare for the care when we cannot be there · <a href="https://linktr.ee/the1truedan">Linktree</a> · <a href="https://ko-fi.com/the1truedan">Ko-fi</a></p>
-<!-- manager-footer:end -->
