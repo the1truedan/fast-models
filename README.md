@@ -1,13 +1,13 @@
 # fast-models
 
-One fast share for the bulky AI files — models, caches, git checkouts, Pinokio
-trees — so you stop copying them onto every machine.
+One fast shared storage pool for large AI files: models, caches, git checkouts
+and Pinokio folders. You do not need to copy these files to each computer.
 
-This repo is the **storage plane**. It is not a chat stack. Pair it with
-[ai-gateway](https://github.com/the1truedan/ai-gateway) if you want the
-language-model side.
+This repository is the **storage layer**. It does not contain a chat system.
+Use [ai-gateway](https://github.com/the1truedan/ai-gateway) for the
+language-model part.
 
-**v0.2.2** · [site](https://the1truedan.github.io/fast-models/) ·
+**v0.2.3** · [site](https://the1truedan.github.io/fast-models/) ·
 [changelog](CHANGELOG.md) · [Unraid NFS runbook](docs/UNRAID_NFS_PERSIST.md) ·
 [Grafana sample](docs/observability.html)
 
@@ -18,6 +18,18 @@ language-model side.
 | Space saving | **bees** shares identical chunks so near-duplicate weights do not eat the disk twice | [Zygo/bees](https://github.com/Zygo/bees) |
 | Sharing | Host NFS so Mac and Linux clients can mount the pool | kernel NFS |
 | Scope | Storage only | [ai-gateway](https://github.com/the1truedan/ai-gateway) for chat/agents |
+
+## Pool numbers (2026-10-02)
+
+| Measure | Value |
+|---|---|
+| Pool | 3.7 TB device; 2.60 TiB data used of 2.68 TiB allocated; 1.1 TB free (72% used) |
+| bees | Hash table 6 GiB, 75% full. The crawl is current with the file system. |
+| Space that only each folder uses (`btrfs filesystem du -s`, "exclusive") | models 1,759 GB · pinokio 250 GB · work 196 GB · github 56 GB |
+
+**Lesson:** a duplicate-file audit overstates the space that you can get back, because bees already shares
+those blocks. Measure "exclusive" space with `btrfs filesystem du -s` on the server before you delete.
+On this pool, a 65 GB copy of a model folder had 0 GB of exclusive space.
 
 ## Read this first (Unraid)
 
@@ -295,7 +307,7 @@ from **13 April 2026**; LLC **20 April 2026**; public modular repos late
 
 <p align="left">
   <a href="https://the1truedan.github.io/fast-models/"><img src="https://img.shields.io/badge/pages-fast--models-e8b84a?style=for-the-badge" alt="GitHub Pages"></a>
-  <a href="https://github.com/the1truedan/fast-models/releases/tag/v0.2.2"><img src="https://img.shields.io/badge/release-v0.2.2-3dcaa0?style=for-the-badge" alt="v0.2.2"></a>
+  <a href="https://github.com/the1truedan/fast-models/releases/tag/v0.2.3"><img src="https://img.shields.io/badge/release-v0.2.3-3dcaa0?style=for-the-badge" alt="v0.2.2"></a>
   <a href="https://linktr.ee/the1truedan"><img src="https://img.shields.io/badge/Linktree-39E09B?style=for-the-badge&logo=linktree&logoColor=white" alt="Linktree"></a>
   <a href="https://ko-fi.com/the1truedan"><img src="https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
 </p>

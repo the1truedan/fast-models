@@ -3,6 +3,20 @@
 All notable changes to **fast-models** are documented here.
 Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.3] — 2026-10-02
+
+### Changed
+
+- README, site and repository description rewritten in ASD-STE100 style (Simplified Technical English):
+  short sentences, active voice, one term for one thing.
+- New "Pool numbers (2026-10-02)" section: 2.60 TiB used of 2.68 TiB allocated, bees hash table 75% full,
+  and exclusive space per top-level folder.
+
+### Learned
+
+- A duplicate-file audit overstates the space that you can get back. bees already shares those blocks.
+  Measure exclusive space with `btrfs filesystem du -s` before you delete.
+
 ## [0.2.2] — 2026-08-15
 
 ### Changed
