@@ -346,3 +346,9 @@ from **13 April 2026**; LLC **20 April 2026**; public modular repos late
 </p>
 
 **© 2026 M.A.N.A.G.E.R. LLC** — *prepare for the care when we cannot be there*
+
+<!-- manager-footer:start -->
+---
+
+<p align="center">© 2026 M.A.N.A.G.E.R. LLC — prepare for the care when we cannot be there · <a href="https://linktr.ee/the1truedan">Linktree</a> · <a href="https://ko-fi.com/the1truedan">Ko-fi</a></p>
+<!-- manager-footer:end -->
