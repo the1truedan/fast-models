@@ -7,7 +7,7 @@ This repository is the **storage layer**. It does not contain a chat system.
 Use [ai-gateway](https://github.com/the1truedan/ai-gateway) for the
 language-model part.
 
-**v0.2.3** · [site](https://the1truedan.github.io/fast-models/) ·
+**v0.2.4** · [site](https://the1truedan.github.io/fast-models/) ·
 [changelog](CHANGELOG.md) · [Unraid NFS runbook](docs/UNRAID_NFS_PERSIST.md) ·
 [Grafana sample](docs/observability.html)
 
@@ -167,9 +167,25 @@ fstab:
 
 Fallback: `vers=4.1`, or `vers=3` with `<nas-host-ip>:/mnt/ai-data`.
 
-### macOS — NFSv3 + full path
+### macOS — use SMB3 (NFS is a fallback only)
 
-v4 root often fails with *RPC prog. not avail*:
+**Lesson from this lab (August–September 2026):** NFS mounts on macOS were not reliable.
+NFS v3, v4 and v4.1 mounts hung many times, also after a macOS update. A hung mount stops
+every program that reads the share. We moved the Mac clients to **SMB3**. Linux clients
+stay on NFSv4.2, which has worked without these hangs. Do not expect one NFS setup to serve
+Linux (v4.2) and macOS (v3) equally well.
+
+Recommended (Finder → Go → Connect to Server, or the command line):
+
+```bash
+mkdir -p ~/ai-data
+mount_smbfs //<user>@<nas-host-ip>/<share> ~/ai-data
+```
+
+Use the share for reading and for normal copies. Run large file walks, hashes and bulk
+moves **on the server itself**, not over the network share.
+
+Fallback only (NFS v3; the v4 root often fails with *RPC prog. not avail*):
 
 ```bash
 sudo mkdir -p /Volumes/ai-data
@@ -200,6 +216,12 @@ when `ENABLE_BEES=1` (not a nightly cron).
 | **1G** | Small pools / first experiments |
 | **2G** | **Default** for multi-TiB pools |
 | **4G** | Only if 2G stays nearly full after a full re-crawl; ~4 GiB sticky RAM, no swap |
+
+**Reality check (this pool, 2.6 TiB of mostly model files):** the 1G table was 99% full by
+July 2026. We increased it to 4G, then to **6G on 2026-09-27**. At 6G it is 75% full and
+still evicts old fingerprints (about 1.4 million evictions), so some duplicates are missed.
+For a 2–3 TiB pool of model files, plan for **4–6G**. The table size is also the RAM that
+bees keeps in use.
 
 A table at 100% full is **not** a full disk and is **not** caused by Unraid
 parity. bees still runs; it just forgets old fingerprints. Sizing notes:
@@ -257,6 +279,17 @@ If you later prefer Unraid to own the Btrfs cache pool
 `/mnt/fast-models` as a volume and drop `devices:` / format logic. That is
 the “host pool” topology. This compose is the **device-bound** path.
 
+## Next: a dedicated storage host (planned)
+
+**Bottleneck that we measured:** the server has one 1 GbE network port. Linux NFS clients and
+Mac SMB clients share it, so copies stop at about 110 MB/s. Hashing is not the limit: one
+modern CPU core hashes SHA-256 at 0.4–3 GB/s.
+
+**Plan:** move storage to a dedicated host. Alpine Linux in Docker on a dual-Xeon server,
+with a **10 Gb (or faster) SFP+ back-end link** between the storage host and the compute
+hosts. The 1 GbE network then serves only normal client traffic. Until then, the NFS and
+SMB rules above apply.
+
 ## Optional: Alpine VM (true PCIe isolation)
 
 VFIO passthrough of the dual-NVMe card + ZFS bclone + NFS inside a minimal
@@ -307,7 +340,7 @@ from **13 April 2026**; LLC **20 April 2026**; public modular repos late
 
 <p align="left">
   <a href="https://the1truedan.github.io/fast-models/"><img src="https://img.shields.io/badge/pages-fast--models-e8b84a?style=for-the-badge" alt="GitHub Pages"></a>
-  <a href="https://github.com/the1truedan/fast-models/releases/tag/v0.2.3"><img src="https://img.shields.io/badge/release-v0.2.3-3dcaa0?style=for-the-badge" alt="v0.2.2"></a>
+  <a href="https://github.com/the1truedan/fast-models/releases/tag/v0.2.4"><img src="https://img.shields.io/badge/release-v0.2.4-3dcaa0?style=for-the-badge" alt="v0.2.2"></a>
   <a href="https://linktr.ee/the1truedan"><img src="https://img.shields.io/badge/Linktree-39E09B?style=for-the-badge&logo=linktree&logoColor=white" alt="Linktree"></a>
   <a href="https://ko-fi.com/the1truedan"><img src="https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
 </p>

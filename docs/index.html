@@ -27,8 +27,8 @@
     <div class="hero-cta">
       <a class="btn primary" href="https://github.com/the1truedan/fast-models">View on GitHub</a>
       <a class="btn" href="runbook.html">Unraid persist runbook</a>
-      <a class="btn" href="https://github.com/the1truedan/fast-models/releases/tag/v0.2.3">v0.2.3</a>
-      <span class="version-chip">v<b>0.2.3</b> · MIT · public</span>
+      <a class="btn" href="https://github.com/the1truedan/fast-models/releases/tag/v0.2.4">v0.2.4</a>
+      <span class="version-chip">v<b>0.2.4</b> · MIT · public</span>
     </div>
   </div>
 </div>
@@ -55,7 +55,7 @@
     <a class="stack-card" href="runbook.html">
       <span class="role">share</span>
       <h3>Host NFS</h3>
-      <p>Linux clients: NFSv4.2, mount <code>/</code>. macOS: NFSv3 + full path. Container does not run nfsd.</p>
+      <p>Linux clients: NFSv4.2, mount <code>/</code>. macOS: use SMB3. NFS mounts on macOS hung many times in this lab. Container does not run nfsd.</p>
       <span class="link-hint">persist runbook →</span>
     </a>
     <a class="stack-card" href="https://github.com/Zygo/bees" target="_blank" rel="noopener">
@@ -96,7 +96,7 @@
       <span class="cap-glyph">⬡</span>
       <div>
         <h3>Shares identical extents</h3>
-        <p>bees walks in the background. A 2G hash table is the default for multi-terabyte pools.</p>
+        <p>bees walks in the background. 2G is the default hash table. Reality check: this 2.6 TiB pool of model files needed 6G, and 6G is 75% full.</p>
       </div>
     </div>
     <div class="cap-tile">

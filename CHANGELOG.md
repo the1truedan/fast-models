@@ -3,6 +3,21 @@
 All notable changes to **fast-models** are documented here.
 Format inspired by [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.4] — 2026-10-02
+
+### Changed
+
+- **macOS clients: SMB3 is now the recommended mount.** NFS v3, v4 and v4.1 mounts on macOS hung many
+  times in this lab, also after a macOS update. Linux clients stay on NFSv4.2. NFS v3 on macOS is now a
+  fallback only. Large walks, hashes and bulk moves run on the server, not over the share.
+- **bees hash table reality check:** 1G was 99% full by July 2026; 4G, then 6G on 2026-09-27; 6G is 75%
+  full with about 1.4 million evictions. Plan for 4–6G on a 2–3 TiB pool of model files.
+
+### Planned
+
+- Dedicated storage host: Alpine Linux in Docker on a dual-Xeon server, with a 10 Gb (or faster) SFP+
+  back-end link. Reason: the single 1 GbE port limits copies to about 110 MB/s for all clients.
+
 ## [0.2.3] — 2026-10-02
 
 ### Changed
